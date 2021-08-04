@@ -55,20 +55,24 @@ app.post('/api/shorturl', function (req, res) {
     res.json({
       error: 'invalid url'
     });
+  } else { //update the database if the URL is valid
+
+    let newEntry = new URLstore({
+      original_url: req.body.url,
+    });
+
+    newEntry.save(function (error, data) {
+      if (error) {
+        return console.error(error, "URL didn't save");
+      } else {
+        // done(null, data);
+        res.json({ original_url: data.original_url, short_url: data.id });
+      }
+    });
+
   }
 
-  let newEntry = new URLstore({
-    original_url: req.body.url,
-  });
 
-  newEntry.save(function (error, data) {
-    if (error) {
-      return console.error(error, "URL didn't save");
-    } else {
-      // done(null, data);
-      res.json({ original_url: data.original_url, short_url: data.id });
-    }
-  });
 });
 
 
